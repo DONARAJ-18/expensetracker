@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1e293b;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px #0001;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 12px;
+            }
+
+            .card {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>💰 Expense Tracker</h1>
+
+    <div class="card">
+        <h2>Add New Expense</h2>
+
+        <form action="/add" method="post">
+
+            <div class="form-grid">
+
+                <input type="text"
+                       name="title"
+                       placeholder="Expense name"
+                       required>
+
+                <select name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Food">Food</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Shopping">Shopping</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Education">Education</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <input type="number"
+                       name="amount"
+                       placeholder="Amount (₹)"
+                       min="0.01"
+                       step="0.01"
+                       required>
+
+                <input type="date"
+                       name="expenseDate"
+                       required>
+
+            </div>
+
+            <button type="submit">Add Expense</button>
+
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>Transaction History</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Amount (₹)</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="item : ${expenses}">
+                    <td th:text="${item.title}"></td>
+                    <td th:text="${item.category}"></td>
+                    <td th:text="${item.amount}"></td>
+                    <td th:text="${item.expenseDate}"></td>
+
+                    <td>
+                        <a class="delete"
+                           th:href="@{/delete/{id}(id=${item.id})}"
+                           onclick="return confirm('Delete this expense?')">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(expenses)}">
+                    <td colspan="5" style="text-align:center">
+                        No expenses added yet.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>
